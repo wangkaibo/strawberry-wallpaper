@@ -51,7 +51,7 @@ import (
 	"testing"
 )
 
-// __DO_NOT_REMOVE__NEEDED_FOR_REPLACING__IMPORT_PATH__FOR_CODEC_BENCH__
+// DO NOT REMOVE - replacement line for go-codec-bench import declaration tag //
 
 type testHED struct {
 	H Handle
@@ -139,14 +139,8 @@ func init() {
 	testHEDs = make([]testHED, 0, 32)
 	testHandles = append(testHandles,
 		// testNoopH,
-		testMsgpackH, testBincH, testSimpleH, testCborH, testJsonH)
-	// set ExplicitRelease on each handle
-	testMsgpackH.ExplicitRelease = true
-	testBincH.ExplicitRelease = true
-	testSimpleH.ExplicitRelease = true
-	testCborH.ExplicitRelease = true
-	testJsonH.ExplicitRelease = true
-
+		testMsgpackH, testBincH, testSimpleH,
+		testCborH, testJsonH)
 	testInitFlags()
 	benchInitFlags()
 }
@@ -241,9 +235,6 @@ func sTestCodecEncode(ts interface{}, bsIn []byte, fn func([]byte) *bytes.Buffer
 		bs = buf.Bytes()
 		bh.WriterBufferSize = oldWriteBufferSize
 	}
-	if !testUseReset {
-		e.Release()
-	}
 	return
 }
 
@@ -275,9 +266,6 @@ func sTestCodecDecode(bs []byte, ts interface{}, h Handle, bh *BasicHandle) (err
 	}
 	if testUseIoEncDec >= 0 {
 		bh.ReaderBufferSize = oldReadBufferSize
-	}
-	if !testUseReset {
-		d.Release()
 	}
 	return
 }

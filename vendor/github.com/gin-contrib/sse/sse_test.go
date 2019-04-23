@@ -28,8 +28,7 @@ data:id:fake
 `)
 
 	decoded, _ := Decode(w)
-	assert.Equal(t, "message", decoded[0].Event)
-	assert.Equal(t, decoded[0].Data, []Event{event}[0].Data)
+	assert.Equal(t, decoded, []Event{event})
 }
 
 func TestEncodeWithEvent(t *testing.T) {
@@ -50,8 +49,7 @@ data:id:fake
 `)
 
 	decoded, _ := Decode(w)
-	assert.Equal(t, "t\\n:<>\\r\test", decoded[0].Event)
-	assert.Equal(t, decoded[0].Data, []Event{event}[0].Data)
+	assert.Equal(t, decoded, []Event{event})
 }
 
 func TestEncodeWithId(t *testing.T) {

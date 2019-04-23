@@ -1,8 +1,8 @@
 package main
 
 import (
-	"strawberry/routers"
-	"strawberry/db"
+	"strawberry-wallpaper/routers"
+	"strawberry-wallpaper/db"
 )
 
 func main() {

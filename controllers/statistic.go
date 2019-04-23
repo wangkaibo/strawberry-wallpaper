@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"strawberry/models"
-	"strawberry/utils"
+	"strawberry-wallpaper/models"
+	"strawberry-wallpaper/utils"
 	time2 "time"
 )
 

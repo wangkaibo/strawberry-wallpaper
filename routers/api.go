@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"strawberry/controllers"
+	"strawberry-wallpaper/controllers"
 )
 
 func SetupRouter() *gin.Engine {

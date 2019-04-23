@@ -1,7 +1,7 @@
 package models
 
 import (
-	"strawberry/db"
+	"strawberry-wallpaper/db"
 )
 
 const (

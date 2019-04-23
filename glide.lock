@@ -1,8 +1,8 @@
-hash: 1ac8b0e6472372af9853695200e79ff9feb0dcd1829d37dd1b4980c805d212ed
-updated: 2019-04-23T00:19:47.106157+08:00
+hash: b23029c0880847aef014e6a91fb41ad920894dd1c82d51562fa53babd6ae722c
+updated: 2019-04-23T14:04:02.47408+08:00
 imports:
 - name: github.com/gin-contrib/sse
-  version: 5545eab6dad3bbbd6c5ae9186383c2a9d23c0dae
+  version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
 - name: github.com/gin-gonic/gin
   version: b869fe1415e4b9eb52f247441830d502aece2d4d
   subpackages:
@@ -12,25 +12,31 @@ imports:
 - name: github.com/go-sql-driver/mysql
   version: 72cd26f257d44c1114970e19afddcd812016007e
 - name: github.com/golang/protobuf
-  version: e91709a02e0e8ff8b86b7aa913fdc9ae9498e825
+  version: 7716a980bceefe9a0213654823d9ea62d23b87a2
   subpackages:
   - proto
 - name: github.com/json-iterator/go
-  version: 0ff49de124c6f76f8494e194af75bde0f1a49a29
+  version: 2433035e513208b0f7bd5b50d0aecd889b2c1ff8
 - name: github.com/mattn/go-isatty
-  version: c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7
+  version: 3fb116b820352b7f0c281308a4d6250c22d94e27
 - name: github.com/modern-go/concurrent
   version: bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94
 - name: github.com/modern-go/reflect2
   version: 94122c33edd36123c84d5368cfb2b69df93a0ec8
 - name: github.com/ugorji/go
-  version: 1d65431a5776db967ae5481e33b789f9ffcea0ec
+  version: 99ea80c8b19ad777f970258ca09c5c2d5826f0fd
   subpackages:
   - codec
-- name: golang.org/x/sys/unix
-  version: e8e3143a4f4a00f1fafef0dd82ba78223281b01b
+- name: golang.org/x/sys
+  version: dad3d9fb7b6e83d0f9ac8f54670f6334c3a287b4
+  subpackages:
+  - unix
+- name: google.golang.org/appengine
+  version: 54a98f90d1c46b7731eb8fb305d2a321c30ef610
+  subpackages:
+  - cloudsql
 - name: gopkg.in/go-playground/validator.v8
   version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
 - name: gopkg.in/yaml.v2
-  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []
