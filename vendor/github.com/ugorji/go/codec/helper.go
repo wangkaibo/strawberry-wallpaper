@@ -582,12 +582,34 @@ type BasicHandle struct {
 // basicHandle returns an initialized BasicHandle from the Handle.
 func basicHandle(hh Handle) (x *BasicHandle) {
 	x = hh.getBasicHandle()
-	if atomic.CompareAndSwapUint32(&x.inited, 0, 1) {
+	// ** We need to simulate once.Do, to ensure no data race within the block.
+	// ** Consequently, below would not work.
+	// if atomic.CompareAndSwapUint32(&x.inited, 0, 1) {
+	// 	x.be = hh.isBinary()
+	// 	_, x.js = hh.(*JsonHandle)
+	// 	x.n = hh.Name()[0]
+	// }
+
+	// simulate once.Do using our own stored flag and mutex as a CompareAndSwap
+	// is not sufficient, since a race condition can occur within init(Handle) function.
+	// init is made noinline, so that this function can be inlined by its caller.
+	if atomic.LoadUint32(&x.inited) == 0 {
+		x.init(hh)
+	}
+	return
+}
+
+//go:noinline
+func (x *BasicHandle) init(hh Handle) {
+	// make it uninlineable, as it is called at most once
+	x.mu.Lock()
+	if x.inited == 0 {
 		x.be = hh.isBinary()
 		_, x.js = hh.(*JsonHandle)
 		x.n = hh.Name()[0]
+		atomic.StoreUint32(&x.inited, 1)
 	}
-	return
+	x.mu.Unlock()
 }
 
 func (x *BasicHandle) getBasicHandle() *BasicHandle {

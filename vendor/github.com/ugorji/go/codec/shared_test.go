@@ -51,7 +51,7 @@ import (
 	"testing"
 )
 
-// DO NOT REMOVE - replacement line for go-codec-bench import declaration tag //
+// __DO_NOT_REMOVE__NEEDED_FOR_REPLACING__IMPORT_PATH__FOR_CODEC_BENCH__
 
 type testHED struct {
 	H Handle
