@@ -1,4 +1,4 @@
-// comment this out // + build testing
+/* // +build testing */
 
 // Copyright (c) 2012-2018 Ugorji Nwoke. All rights reserved.
 // Use of this source code is governed by a MIT license found in the LICENSE file.
@@ -36,6 +36,36 @@ type wrapStringSlice []wrapString
 type stringUint64T struct {
 	S string
 	U uint64
+}
+
+type missingFielderT1 struct {
+	S string
+	B bool
+	f float64
+	i int64
+}
+
+func (t *missingFielderT1) CodecMissingField(field []byte, value interface{}) bool {
+	switch string(field) {
+	case "F":
+		t.f = value.(float64)
+	case "I":
+		t.i = value.(int64)
+	default:
+		return false
+	}
+	return true
+}
+
+func (t *missingFielderT1) CodecMissingFields() map[string]interface{} {
+	return map[string]interface{}{"F": t.f, "I": t.i}
+}
+
+type missingFielderT2 struct {
+	S string
+	B bool
+	F float64
+	I int64
 }
 
 type AnonInTestStruc struct {
@@ -351,7 +381,6 @@ func populateTestStrucCommon(ts *TestStrucCommon, n int, bench, useInterface, us
 		// ts.Iptrslice = nil
 	}
 	if !useStringKeyOnly {
-		var _ byte = 0 // so this empty branch doesn't flag a warning
 		// ts.AnonInTestStruc.AMU32F64 = map[uint32]float64{1: 1, 2: 2, 3: 3} // Json/Bson barf
 	}
 }
