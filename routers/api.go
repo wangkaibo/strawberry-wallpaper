@@ -1,13 +1,12 @@
 package routers
 
 import (
-	"github.com/gin-gonic/gin"
 	"strawberry-wallpaper/controllers"
+	"strawberry-wallpaper/bootstrap"
 )
 
-func SetupRouter() *gin.Engine {
-	r := gin.Default()
+func SetupRouter(b *bootstrap.Bootstrap) {
+	r := b.Engine
 	statistic := new(controllers.StatisticController)
 	r.GET("/test", statistic.Statistic)
-	return r
 }
