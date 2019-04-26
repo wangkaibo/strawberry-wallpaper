@@ -21,8 +21,8 @@
 - ##### 请求参数
     请求参数|参数类型|参数说明
     --|--|--|
-    os|String|系统类型
-    osVersion|String|系统版本
+    platform|String|系统类型
+    platformVersion|String|系统版本
     version|String|安装的软件版本
     userName|String|安装用户的电脑用户名
     uid|String|生成的软件唯一ID,生成方式 md5_32(`${os}${ovVersion}${userName}${resTime}`)
