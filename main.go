@@ -7,10 +7,12 @@ import (
 	"strawberry-wallpaper/routers"
 	"github.com/gin-gonic/gin"
 	"os"
+	"path/filepath"
 )
 func init() {
 	// 加载环境变量
-	err := godotenv.Load(".env.local")
+	path := filepath.Dir(os.Args[0])
+	err := godotenv.Load(path + "/.env.local")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
