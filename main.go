@@ -1,10 +1,18 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
+	"log"
 	"strawberry-wallpaper/bootstrap"
 	"strawberry-wallpaper/routers"
 )
-
+func init() {
+	// 加载环境变量
+	err := godotenv.Load(".env.local")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 func main() {
 	app := bootstrap.NewApp("strawberry")
 	app.Configure(routers.SetupRouter)

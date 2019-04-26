@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"os"
 	"sync"
 )
 
@@ -11,8 +12,12 @@ var (
 )
 
 func initMySql() {
-	var err interface {Error() string}
-	mysql, _ = sql.Open("mysql", "root:123456@/strawberry?charset=utf8")
+	var err error
+	dataSourceName := os.Getenv("MYSQL_USERNAME")
+	dataSourceName += ":" + os.Getenv("MYSQL_PASSWORD")
+	dataSourceName += "@tcp(" + os.Getenv("MYSQL_HOST") + ":" + os.Getenv("MYSQL_PORT") + ")"
+	dataSourceName +=  "/strawberry?charset=utf8"
+	mysql, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		panic(err)
 	}
