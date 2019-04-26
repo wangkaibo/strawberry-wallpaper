@@ -25,7 +25,6 @@
     osVersion|String|系统版本
     version|String|安装的软件版本
     userName|String|安装用户的电脑用户名
-    resTime|String?Date|安装时间
     uid|String|生成的软件唯一ID,生成方式 md5_32(`${os}${ovVersion}${userName}${resTime}`)
 
 - ##### 返回参数
