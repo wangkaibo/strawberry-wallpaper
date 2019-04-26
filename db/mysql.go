@@ -10,15 +10,6 @@ var (
 	lock sync.Mutex
 )
 
-func InitMySql() {
-	var err interface {Error() string}
-	mysql, _ = sql.Open("mysql", "root:123456@/strawberry?charset=utf8")
-	if err != nil {
-		panic(err)
-	}
-	return
-}
-
 func initMySql() {
 	var err interface {Error() string}
 	mysql, _ = sql.Open("mysql", "root:123456@/strawberry?charset=utf8")
