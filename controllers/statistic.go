@@ -5,6 +5,7 @@ import (
 	"strawberry-wallpaper/utils"
 	time2 "time"
 	"strawberry-wallpaper/services"
+	"strawberry-wallpaper/models"
 )
 
 type StatisticController struct {
@@ -14,11 +15,18 @@ type StatisticController struct {
 
 func (c *StatisticController) Register(ctx *gin.Context) {
 	platform := utils.GetPlatformByUa(ctx.Request.UserAgent())
-	registerTime := time2.Now().Format("2006-01-02 15:04:05")
-	c.Service.AddVisitLog(ctx.Request.RemoteAddr, platform, registerTime)
-	c.success(ctx, map[string]interface{}{
-		"ip": ctx.Request.RemoteAddr,
-		"platform": platform,
-		"register_time": registerTime,
-	})
+	platformVersion := ctx.PostForm("platformVersion")
+	userName := ctx.PostForm("username")
+	uid := ctx.PostForm("uid")
+	user := &models.User{
+		Uid: uid,
+		Platform: platform,
+		PlatformVersion: platformVersion,
+		Username: userName,
+		RegisterTime: time2.Now(),
+		Ip: ctx.ClientIP(),
+		Ua: ctx.Request.UserAgent(),
+	}
+	c.Service.Register(user)
+	c.success(ctx, user)
 }

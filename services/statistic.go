@@ -4,10 +4,11 @@ import (
 	"strawberry-wallpaper/dao"
 	"strawberry-wallpaper/db"
 	"log"
+	"strawberry-wallpaper/models"
 )
 
 type StatisticService interface {
-	AddVisitLog(ip string, platform string, registerTime string) error
+	Register(*models.User) error
 }
 
 type statisticService struct {
@@ -20,8 +21,8 @@ func NewStatisticService() StatisticService {
 	}
 }
 
-func (s *statisticService) AddVisitLog(ip string, platform string, registerTime string) error {
-	err := s.dao.Create(ip, platform, registerTime)
+func (s *statisticService) Register(user *models.User) (error) {
+	err := s.dao.Create(user)
 	if err != nil {
 		log.Fatalln(err)
 	}

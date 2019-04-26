@@ -1,7 +1,7 @@
 ## 草莓壁纸接口文档 V0.1
 
 ### 接口通用返回格式定义
-```js
+```
 {
     code:200,     // 标准的状态码
     data:[]|{}|'', //返回的数据
@@ -24,7 +24,7 @@
     platform|String|系统类型
     platformVersion|String|系统版本
     version|String|安装的软件版本
-    userName|String|安装用户的电脑用户名
+    username|String|安装用户的电脑用户名
     uid|String|生成的软件唯一ID,生成方式 md5_32(`${os}${ovVersion}${userName}${resTime}`)
 
 - ##### 返回参数

@@ -1,13 +1,13 @@
 package db
 
 import (
-	"database/sql"
 	"os"
 	"sync"
+	"github.com/go-xorm/xorm"
 )
 
 var (
-	mysql *sql.DB
+	mysql *xorm.Engine
 	lock sync.Mutex
 )
 
@@ -17,14 +17,14 @@ func initMySql() {
 	dataSourceName += ":" + os.Getenv("MYSQL_PASSWORD")
 	dataSourceName += "@tcp(" + os.Getenv("MYSQL_HOST") + ":" + os.Getenv("MYSQL_PORT") + ")"
 	dataSourceName +=  "/strawberry?charset=utf8"
-	mysql, err = sql.Open("mysql", dataSourceName)
+	mysql, err = xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
 		panic(err)
 	}
 	return
 }
 // 没有主从，直接返回单实例
-func GetInstanceMysql() *sql.DB {
+func GetInstanceMysql() *xorm.Engine {
 	if mysql != nil {
 		return mysql
 	}
@@ -34,9 +34,5 @@ func GetInstanceMysql() *sql.DB {
 		return mysql
 	}
 	initMySql()
-	return mysql
-}
-
-func GetMySql() (*sql.DB) {
 	return mysql
 }

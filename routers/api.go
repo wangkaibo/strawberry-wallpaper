@@ -12,5 +12,5 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	statisticController := &controllers.StatisticController{
 		Service: statisticService,
 	}
-	r.GET("/register", statisticController.Register)
+	r.POST("/register", statisticController.Register)
 }
