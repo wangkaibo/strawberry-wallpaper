@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
@@ -24,5 +25,8 @@ func main() {
 	app := bootstrap.NewApp("strawberry")
 	app.Configure(routers.SetupRouter)
 	// Listen and Server in 0.0.0.0:8080
-	app.Engine.Run(":8080")
+	err := app.Engine.Run(":8080")
+	if err != nil {
+		fmt.Println(err)
+	}
 }
