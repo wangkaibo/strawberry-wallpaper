@@ -1,13 +1,17 @@
 package routers
 
 import (
-	"strawberry-wallpaper/controllers"
+	"github.com/gin-contrib/cors"
 	"strawberry-wallpaper/bootstrap"
+	"strawberry-wallpaper/controllers"
 	"strawberry-wallpaper/services"
 )
 
 func SetupRouter(b *bootstrap.Bootstrap) {
 	r := b.Engine
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	r.Use(cors.New(config))
 	statisticService := services.NewStatisticService()
 	statisticController := &controllers.StatisticController{
 		Service: statisticService,
