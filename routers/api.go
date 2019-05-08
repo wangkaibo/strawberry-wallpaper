@@ -14,7 +14,8 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	r.Use(cors.New(config))
 	statisticService := services.NewStatisticService()
 	statisticController := &controllers.StatisticController{
-		Service: statisticService,
+		StatisticService: statisticService,
 	}
 	r.POST("/register", statisticController.Register)
+	r.POST("/active", statisticController.Active)
 }
