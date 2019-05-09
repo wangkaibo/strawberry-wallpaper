@@ -2,10 +2,9 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"strawberry-wallpaper/utils"
-	time2 "time"
-	"strawberry-wallpaper/services"
 	"strawberry-wallpaper/models"
+	"strawberry-wallpaper/services"
+	time2 "time"
 )
 
 type StatisticController struct {
@@ -14,7 +13,7 @@ type StatisticController struct {
 }
 
 func (c *StatisticController) Register(ctx *gin.Context) {
-	platform := utils.GetPlatformByUa(ctx.Request.UserAgent())
+	platform := ctx.PostForm("platform")
 	platformVersion := ctx.PostForm("platformVersion")
 	version := ctx.PostForm("version")
 	username := ctx.PostForm("username")
