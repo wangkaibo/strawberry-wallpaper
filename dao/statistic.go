@@ -37,6 +37,6 @@ func (dao *StatisticDao) FindByUid(uid string) (bool, *models.User) {
 }
 
 func (dao *StatisticDao) Update(user *models.User) (int64, error) {
-	affectRows, err := dao.engine.Update(user)
+	affectRows, err := dao.engine.Id(user.Id).Update(user)
 	return affectRows, err
 }

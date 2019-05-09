@@ -51,7 +51,7 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 	}
 	err = c.StatisticService.Register(user)
 	if err != nil {
-		c.error(ctx,500, err.Error(), gin.H{})
+		c.error(ctx,400, err.Error(), gin.H{})
 		return
 	}
 	c.success(ctx, user)
@@ -62,8 +62,12 @@ func (c *StatisticController) Active(ctx *gin.Context) {
 		Uid string
 	})
 	raw,_ := ctx.GetRawData()
-	json.Unmarshal(raw, activeReq)
-	err := c.StatisticService.Active(activeReq.Uid)
+	err := json.Unmarshal(raw, activeReq)
+	if err != nil {
+		c.error(ctx,400,"不合法的json", gin.H{})
+		return
+	}
+	err = c.StatisticService.Active(activeReq.Uid)
 	if err != nil {
 		c.error(ctx, 400, err.Error(), gin.H{})
 	} else {
