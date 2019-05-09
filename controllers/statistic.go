@@ -49,7 +49,7 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		Ip: ctx.ClientIP(),
 		Ua: ua,
 	}
-	err := c.StatisticService.Register(user)
+	err = c.StatisticService.Register(user)
 	if err != nil {
 		c.error(ctx,500, err.Error(), gin.H{})
 		return
