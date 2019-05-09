@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"strawberry-wallpaper/models"
 	"strawberry-wallpaper/services"
@@ -12,18 +13,24 @@ type StatisticController struct {
 	StatisticService services.StatisticService
 }
 
+type RegisterReq struct {
+	Uid string `json:"uid"`
+	Platform string `json:"platform"`
+	PlatformVersion string `json:"platformVersion"`
+	Version string `json:"version"`
+	Username string `json:"username"`
+}
+
 func (c *StatisticController) Register(ctx *gin.Context) {
-	platform := ctx.PostForm("platform")
-	platformVersion := ctx.PostForm("platformVersion")
-	version := ctx.PostForm("version")
-	username := ctx.PostForm("username")
-	uid := ctx.PostForm("uid")
+	registerReq := &RegisterReq{}
+	raw,_ := ctx.GetRawData()
+	json.Unmarshal(raw, registerReq)
 	user := &models.User{
-		Uid: uid,
-		Platform: platform,
-		PlatformVersion: platformVersion,
-		Version: version,
-		Username: username,
+		Uid: registerReq.Uid,
+		Platform: registerReq.Platform,
+		PlatformVersion: registerReq.PlatformVersion,
+		Version: registerReq.Version,
+		Username: registerReq.Username,
 		RegisterTime: time2.Now(),
 		ActiveTime: time2.Now(),
 		Ip: ctx.ClientIP(),
@@ -34,8 +41,12 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 }
 
 func (c *StatisticController) Active(ctx *gin.Context) {
-	uid := ctx.PostForm("uid")
-	err := c.StatisticService.Active(uid)
+	activeReq := new(struct{
+		Uid string
+	})
+	raw,_ := ctx.GetRawData()
+	json.Unmarshal(raw, activeReq)
+	err := c.StatisticService.Active(activeReq.Uid)
 	if err != nil {
 		c.error(ctx, 400, err.Error(), gin.H{})
 	} else {
