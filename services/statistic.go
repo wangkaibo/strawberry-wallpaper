@@ -25,7 +25,7 @@ func NewStatisticService() StatisticService {
 }
 
 func (s *statisticService) Register(user *models.User) error {
-	has, user := s.dao.FindByUid(user.Uid)
+	has, _ := s.dao.FindByUid(user.Uid)
 	if has {
 		return errors.New("该UID已经注册")
 	}
