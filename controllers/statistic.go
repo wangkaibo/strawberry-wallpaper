@@ -10,7 +10,7 @@ import (
 
 type StatisticController struct {
 	BaseController
-	Service services.StatisticService
+	StatisticService services.StatisticService
 }
 
 func (c *StatisticController) Register(ctx *gin.Context) {
@@ -24,9 +24,20 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		PlatformVersion: platformVersion,
 		Username: userName,
 		RegisterTime: time2.Now(),
+		ActiveTime: time2.Now(),
 		Ip: ctx.ClientIP(),
 		Ua: ctx.Request.UserAgent(),
 	}
-	c.Service.Register(user)
+	c.StatisticService.Register(user)
 	c.success(ctx, user)
+}
+
+func (c *StatisticController) Active(ctx *gin.Context) {
+	uid := ctx.PostForm("uid")
+	err := c.StatisticService.Active(uid)
+	if err != nil {
+		c.error(ctx, 400, err.Error(), gin.H{})
+	} else {
+		c.success(ctx, gin.H{})
+	}
 }
