@@ -9,6 +9,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/xorm v0.7.1
 	github.com/joho/godotenv v1.3.0
+	github.com/mssola/user_agent v0.5.0
 	golang.org/x/crypto v0.0.0-20190506204251-e1dfcc566284 // indirect
 	google.golang.org/appengine v1.5.0 // indirect
 )

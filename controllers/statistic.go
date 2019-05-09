@@ -3,9 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/mssola/user_agent"
 	"strawberry-wallpaper/models"
 	"strawberry-wallpaper/services"
-	"strawberry-wallpaper/utils"
 	time2 "time"
 )
 
@@ -16,8 +16,6 @@ type StatisticController struct {
 
 type RegisterReq struct {
 	Uid string `json:"uid"`
-	Platform string `json:"platform"`
-	PlatformVersion string `json:"platformVersion"`
 	Version string `json:"version"`
 	Username string `json:"username"`
 }
@@ -35,13 +33,11 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		return
 	}
 	ua := ctx.Request.UserAgent()
-	if registerReq.Platform == "" {
-		registerReq.Platform = utils.GetPlatformByUa(ua)
-	}
+	userAgent := user_agent.New(ua)
 	user := &models.User{
 		Uid: registerReq.Uid,
-		Platform: registerReq.Platform,
-		PlatformVersion: registerReq.PlatformVersion,
+		Platform: userAgent.Platform(),
+		PlatformVersion: userAgent.OSInfo().Version,
 		Version: registerReq.Version,
 		Username: registerReq.Username,
 		RegisterTime: time2.Now(),
