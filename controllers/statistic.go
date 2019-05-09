@@ -28,9 +28,11 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 	err := json.Unmarshal(raw, registerReq)
 	if err != nil {
 		c.error(ctx,400,"不合法的json", gin.H{})
+		return
 	}
 	if registerReq.Uid == "" || registerReq.Version == "" {
 		c.error(ctx,400,"参数错误", gin.H{})
+		return
 	}
 	ua := ctx.Request.UserAgent()
 	if registerReq.Platform == "" {
@@ -47,7 +49,11 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		Ip: ctx.ClientIP(),
 		Ua: ua,
 	}
-	c.StatisticService.Register(user)
+	err := c.StatisticService.Register(user)
+	if err != nil {
+		c.error(ctx,500, err.Error(), gin.H{})
+		return
+	}
 	c.success(ctx, user)
 }
 
