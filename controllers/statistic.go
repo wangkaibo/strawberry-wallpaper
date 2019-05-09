@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"strawberry-wallpaper/models"
 	"strawberry-wallpaper/services"
+	"strawberry-wallpaper/utils"
 	time2 "time"
 )
 
@@ -24,7 +25,17 @@ type RegisterReq struct {
 func (c *StatisticController) Register(ctx *gin.Context) {
 	registerReq := &RegisterReq{}
 	raw,_ := ctx.GetRawData()
-	json.Unmarshal(raw, registerReq)
+	err := json.Unmarshal(raw, registerReq)
+	if err != nil {
+		c.error(ctx,400,"不合法的json", gin.H{})
+	}
+	if registerReq.Uid == "" || registerReq.Version == "" {
+		c.error(ctx,400,"参数错误", gin.H{})
+	}
+	ua := ctx.Request.UserAgent()
+	if registerReq.Platform == "" {
+		registerReq.Platform = utils.GetPlatformByUa(ua)
+	}
 	user := &models.User{
 		Uid: registerReq.Uid,
 		Platform: registerReq.Platform,
@@ -34,7 +45,7 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		RegisterTime: time2.Now(),
 		ActiveTime: time2.Now(),
 		Ip: ctx.ClientIP(),
-		Ua: ctx.Request.UserAgent(),
+		Ua: ua,
 	}
 	c.StatisticService.Register(user)
 	c.success(ctx, user)

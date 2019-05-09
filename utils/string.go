@@ -8,5 +8,5 @@ func GetPlatformByUa(ua string) string {
 		return "windows"
 	}
 
-	return "osx"
+	return "mac"
 }
