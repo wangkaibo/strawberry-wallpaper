@@ -16,13 +16,15 @@ type StatisticController struct {
 func (c *StatisticController) Register(ctx *gin.Context) {
 	platform := utils.GetPlatformByUa(ctx.Request.UserAgent())
 	platformVersion := ctx.PostForm("platformVersion")
-	userName := ctx.PostForm("username")
+	version := ctx.PostForm("version")
+	username := ctx.PostForm("username")
 	uid := ctx.PostForm("uid")
 	user := &models.User{
 		Uid: uid,
 		Platform: platform,
 		PlatformVersion: platformVersion,
-		Username: userName,
+		Version: version,
+		Username: username,
 		RegisterTime: time2.Now(),
 		ActiveTime: time2.Now(),
 		Ip: ctx.ClientIP(),
