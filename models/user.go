@@ -13,6 +13,8 @@ type User struct {
 	Uid             string    `json:"uid" xorm:"not null default '' VARCHAR(255)"`
 	RegisterTime    time.Time `json:"register_time" xorm:"not null default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 	ActiveTime      time.Time `json:"active_time" xorm:"not null default 'CURRENT_TIMESTAMP'"`
+	ActiveDate      string 	  `json:"active_date" xorm:"not null default '' CHAR(20)"`
+	RegisterDate    string 	  `json:"register_date" xorm:"not null default '' CHAR(20)"`
 	Ip              string    `json:"ip" xorm:"not null VARCHAR(255)"`
 	Ua              string    `json:"ua" xorm:"not null default '' VARCHAR(255)"`
 }

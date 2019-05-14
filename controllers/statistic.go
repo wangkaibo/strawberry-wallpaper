@@ -42,6 +42,8 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		Username: registerReq.Username,
 		RegisterTime: time2.Now(),
 		ActiveTime: time2.Now(),
+		ActiveDate: time2.Now().Format("2006/01/02"),
+		RegisterDate: time2.Now().Format("2006/01/02"),
 		Ip: ctx.ClientIP(),
 		Ua: ua,
 	}

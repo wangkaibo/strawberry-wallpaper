@@ -40,6 +40,7 @@ func (s *statisticService) Active(uid string) error {
 	has, user := s.dao.FindByUid(uid)
 	if has {
 		user.ActiveTime = time.Now()
+		user.ActiveDate = time.Now().Format("2006/01/02")
 	} else {
 		return errors.New("传入的UID不存在")
 	}
