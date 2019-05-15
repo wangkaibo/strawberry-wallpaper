@@ -21,7 +21,7 @@ func (dao *ActiveDao) InertOrUpdate(active *models.Active) error {
 	var err error
 	active.ActiveTime = time.Now()
 	if exist {
-		_, err = dao.engine.Where("uid=?", active.Uid).Where("active_date=?", active.ActiveDate).Update(active)
+		_, err = dao.engine.Where("uid=? AND active_date=?", active.Uid, active.ActiveDate).Update(active)
 	} else {
 		_, err = dao.engine.Insert(active)
 	}
