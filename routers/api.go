@@ -18,4 +18,5 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	}
 	r.POST("/register", statisticController.Register)
 	r.POST("/active", statisticController.Active)
+	r.GET("/statistic", statisticController.Index)
 }

@@ -72,3 +72,13 @@ func (c *StatisticController) Active(ctx *gin.Context) {
 		c.success(ctx, gin.H{})
 	}
 }
+
+
+func (c *StatisticController) Index(ctx *gin.Context) {
+	statistic, err := c.StatisticService.GetStatistic()
+	if err != nil {
+		c.error(ctx, 400, err.Error(), gin.H{})
+	} else {
+		c.success(ctx, statistic)
+	}
+}
