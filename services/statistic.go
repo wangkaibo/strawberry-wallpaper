@@ -72,28 +72,29 @@ func (s *statisticService) GetStatistic(startDate string, endDate string) (map[s
 	activeStatistic,_ := s.activeDao.GetActiveByDate(startDate, endDate)
 	currentTime,_ := time.Parse("2006/01/02", startDate);
 	endTime, _ := time.Parse("2006/01/02", endDate);
-	registerRes := utils.SliceKeyBy(registerStatistic, "register_date")
-	activeRes := utils.SliceKeyBy(activeStatistic, "active_date")
+	registerMap := utils.SliceKeyBy(registerStatistic, "register_date")
+	activeMap := utils.SliceKeyBy(activeStatistic, "active_date")
 	for !currentTime.AddDate(0, 0, 1).Equal(endTime) {
 		currentTime = currentTime.AddDate(0,0,1)
-		if _,ok := registerRes[currentTime.Format("2006/01/02")]; !ok {
-			registerRes[currentTime.Format("2006/01/02")] = map[string]interface{}{
-				"register_date": currentTime.Format("2006/01/02"),
-				"count": 0,
-			}
+		var stat map[string]string
+		if _,ok := registerMap[currentTime.Format("2006/01/02")]; !ok {
+			stat = make(map[string]string)
+			stat["register_date"] = currentTime.Format("2006/01/02")
+			stat["count"] = "0"
+			registerStatistic = append(registerStatistic, stat)
 		}
-		if _,ok := activeRes[currentTime.Format("2006/01/02")]; !ok {
-			activeRes[currentTime.Format("2006/01/02")] = map[string]interface{}{
-				"active_date": currentTime.Format("2006/01/02"),
-				"count": 0,
-			}
+		if _,ok := activeMap[currentTime.Format("2006/01/02")]; !ok {
+			stat = make(map[string]string)
+			stat["active_date"] = currentTime.Format("2006/01/02")
+			stat["count"] = "0"
+			activeStatistic = append(activeStatistic, stat)
 		}
 	}
 	platformStatistic,_ := s.userDao.GetPlatformStat()
 	total,_ := s.userDao.TotalUserNum()
 	activeNum,_ := s.userDao.ActiveNum()
-	data["register"] = registerRes
-	data["active"] = activeRes
+	data["register"] = registerStatistic
+	data["active"] = activeStatistic
 	data["platform"] = platformStatistic
 	data["total_num"] = total
 	data["active_num"] = activeNum
