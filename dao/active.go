@@ -32,3 +32,11 @@ func (dao *ActiveDao) Create(active *models.Active) error {
 	_, err := dao.engine.Insert(active)
 	return err
 }
+
+func (dao *ActiveDao) GetActiveByDate(startDate string, endDate string) ([]map[string]string, error) {
+	activeStatistic := make([]map[string]string, 0)
+	activeStatistic, err := dao.engine.Table("active").Select("active_date, count(*) as count").
+		Where("active_date>=? AND active_date<=?", startDate, endDate).
+		GroupBy("active_date").QueryString()
+	return activeStatistic, err
+}

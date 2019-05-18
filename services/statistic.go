@@ -6,13 +6,14 @@ import (
 	"strawberry-wallpaper/dao"
 	"strawberry-wallpaper/db"
 	"strawberry-wallpaper/models"
+	"strawberry-wallpaper/utils"
 	"time"
 )
 
 type StatisticService interface {
 	Register(*models.User) error
 	Active(string) error
-	GetStatistic() (map[string]interface{}, error)
+	GetStatistic(startDate string, endDate string) (map[string]interface{}, error)
 }
 
 type statisticService struct {
@@ -65,7 +66,30 @@ func (s *statisticService) Active(uid string) error {
 	return nil
 }
 
-func (s *statisticService) GetStatistic() (map[string]interface{}, error) {
+func (s *statisticService) GetStatistic(startDate string, endDate string) (map[string]interface{}, error) {
 	data := map[string]interface{}{}
+	registerStatistic,_ := s.userDao.GetUserByDate(startDate, endDate)
+	activeStatistic,_ := s.activeDao.GetActiveByDate(startDate, endDate)
+	currentTime,_ := time.Parse("2006/01/02", startDate);
+	endTime, _ := time.Parse("2006/01/02", endDate);
+	registerRes := utils.SliceKeyBy(registerStatistic, "register_date")
+	activeRes := utils.SliceKeyBy(activeStatistic, "active_date")
+	for !currentTime.AddDate(0, 0, 1).Equal(endTime) {
+		currentTime = currentTime.AddDate(0,0,1)
+		if _,ok := registerRes[currentTime.Format("2006/01/02")]; !ok {
+			registerRes[currentTime.Format("2006/01/02")] = map[string]interface{}{
+				"register_date": currentTime.Format("2006/01/02"),
+				"count": 0,
+			}
+		}
+		if _,ok := activeRes[currentTime.Format("2006/01/02")]; !ok {
+			activeRes[currentTime.Format("2006/01/02")] = map[string]interface{}{
+				"active_date": currentTime.Format("2006/01/02"),
+				"count": 0,
+			}
+		}
+	}
+	data["register"] = registerRes
+	data["active"] = activeRes
 	return data ,nil
 }

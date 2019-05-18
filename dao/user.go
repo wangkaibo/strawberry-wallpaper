@@ -35,3 +35,11 @@ func (dao *UserDao) Update(user *models.User) (int64, error) {
 	affectRows, err := dao.engine.Id(user.Id).Update(user)
 	return affectRows, err
 }
+
+func (dao *UserDao) GetUserByDate(startDate string, endDate string) ([]map[string]string, error) {
+	userStatistic := make([]map[string]string, 0)
+	userStatistic, err := dao.engine.Table("user").Select("register_date, count(*) as count").
+		Where("register_date>=? AND register_date<=?", startDate, endDate).
+		GroupBy("register_date").QueryString()
+	return userStatistic, err
+}
