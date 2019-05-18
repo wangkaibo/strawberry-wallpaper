@@ -89,7 +89,13 @@ func (s *statisticService) GetStatistic(startDate string, endDate string) (map[s
 			}
 		}
 	}
+	platformStatistic,_ := s.userDao.GetPlatformStat()
+	total,_ := s.userDao.TotalUserNum()
+	activeNum,_ := s.userDao.ActiveNum()
 	data["register"] = registerRes
 	data["active"] = activeRes
+	data["platform"] = platformStatistic
+	data["total_num"] = total
+	data["active_num"] = activeNum
 	return data ,nil
 }

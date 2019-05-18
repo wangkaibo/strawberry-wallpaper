@@ -3,6 +3,8 @@ package dao
 import (
 	"github.com/go-xorm/xorm"
 	"strawberry-wallpaper/models"
+	"strconv"
+	"time"
 )
 
 type UserDao struct {
@@ -42,4 +44,35 @@ func (dao *UserDao) GetUserByDate(startDate string, endDate string) ([]map[strin
 		Where("register_date>=? AND register_date<=?", startDate, endDate).
 		GroupBy("register_date").QueryString()
 	return userStatistic, err
+}
+
+func (dao *UserDao) GetPlatformStat() ([]map[string]string, error) {
+	platformStat := make([]map[string]string, 0)
+	platformStat, err := dao.engine.Table("user").Select("platform, count(*) as count").
+		GroupBy("platform").QueryString()
+	return platformStat, err
+}
+
+func (dao *UserDao) TotalUserNum() (int, error) {
+	res := make([]map[string]string, 1)
+	res, err := dao.engine.Table("user").Select("count(distinct uid) as num").
+		QueryString()
+	total := 0
+	if len(res) > 0 {
+		total,_ = strconv.Atoi(res[0]["num"])
+	}
+	return total, err
+}
+
+func (dao *UserDao) ActiveNum() (int, error) {
+	res := make([]map[string]string, 1)
+	dao.engine.ShowSQL(true)
+	res, err := dao.engine.Table("user").Select("count(distinct uid) as num").
+		Where("active_date>=?", time.Now().AddDate(0,0, -1).Format("2006/01/02")).
+		QueryString()
+	activeNum := 0
+	if len(res) > 0 {
+		activeNum,_ = strconv.Atoi(res[0]["num"])
+	}
+	return activeNum, err
 }
