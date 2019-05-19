@@ -6,7 +6,6 @@ import (
 	"strawberry-wallpaper/dao"
 	"strawberry-wallpaper/db"
 	"strawberry-wallpaper/models"
-	"strawberry-wallpaper/utils"
 	"time"
 )
 
@@ -72,31 +71,44 @@ func (s *statisticService) GetStatistic(startDate string, endDate string) (map[s
 	activeStatistic,_ := s.activeDao.GetActiveByDate(startDate, endDate)
 	currentTime,_ := time.Parse("2006/01/02", startDate);
 	endTime, _ := time.Parse("2006/01/02", endDate);
-	registerMap := utils.SliceKeyBy(registerStatistic, "register_date")
-	activeMap := utils.SliceKeyBy(activeStatistic, "active_date")
+	registerMap := GetDateStatMap(registerStatistic)
+	activeMap := GetDateStatMap(activeStatistic)
+	regData := []models.DateStat{}
+	activeData := []models.DateStat{}
+	var currentDate string
 	for !currentTime.AddDate(0, 0, 1).Equal(endTime) {
 		currentTime = currentTime.AddDate(0,0,1)
-		var stat map[string]string
-		if _,ok := registerMap[currentTime.Format("2006/01/02")]; !ok {
-			stat = make(map[string]string)
-			stat["register_date"] = currentTime.Format("2006/01/02")
-			stat["count"] = "0"
-			registerStatistic = append(registerStatistic, stat)
+		currentDate = currentTime.Format("2006/01/02")
+		emptyStat := models.DateStat{
+			Date: currentDate,
+			Count: 0,
 		}
-		if _,ok := activeMap[currentTime.Format("2006/01/02")]; !ok {
-			stat = make(map[string]string)
-			stat["active_date"] = currentTime.Format("2006/01/02")
-			stat["count"] = "0"
-			activeStatistic = append(activeStatistic, stat)
+		if stat ,ok := registerMap[currentDate]; ok {
+			regData = append(regData, stat)
+		} else {
+			regData = append(regData, emptyStat)
+		}
+		if stat, ok := activeMap[currentDate]; ok {
+			activeData = append(activeData, stat)
+		} else {
+			activeData = append(activeData, emptyStat)
 		}
 	}
 	platformStatistic,_ := s.userDao.GetPlatformStat()
 	total,_ := s.userDao.TotalUserNum()
 	activeNum,_ := s.userDao.ActiveNum()
-	data["register"] = registerStatistic
-	data["active"] = activeStatistic
+	data["register"] = regData
+	data["active"] = activeData
 	data["platform"] = platformStatistic
 	data["total_num"] = total
 	data["active_num"] = activeNum
 	return data ,nil
+}
+
+func GetDateStatMap(s []models.DateStat) map[string]models.DateStat {
+	res := map[string]models.DateStat{}
+	for _, stat := range(s) {
+		res[stat.Date] = stat
+	}
+	return res
 }

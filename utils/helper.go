@@ -26,13 +26,3 @@ func StructToMap(i interface{}) map[string]interface{} {
 
 	return resMap
 }
-
-func SliceKeyBy(s []map[string]string, key string) map[string]interface{} {
-	res := make(map[string]interface{}, len(s))
-	for _, item := range(s) {
-		if _, ok := item[key]; ok {
-			res[item[key]] = item
-		}
-	}
-	return res
-}
