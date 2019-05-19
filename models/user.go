@@ -18,3 +18,8 @@ type User struct {
 	Ip              string    `json:"ip" xorm:"not null VARCHAR(255)"`
 	Ua              string    `json:"ua" xorm:"not null default '' VARCHAR(255)"`
 }
+
+type DateStat struct {
+	Date string `json:"date"`
+	Count int `json:"count"`
+}
