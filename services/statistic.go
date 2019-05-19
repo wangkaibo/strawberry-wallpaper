@@ -76,7 +76,7 @@ func (s *statisticService) GetStatistic(startDate string, endDate string) (map[s
 	regData := []models.DateStat{}
 	activeData := []models.DateStat{}
 	var currentDate string
-	for !currentTime.AddDate(0, 0, 1).Equal(endTime) {
+	for !currentTime.AddDate(0, 0, 1).After(endTime) {
 		currentTime = currentTime.AddDate(0,0,1)
 		currentDate = currentTime.Format("2006/01/02")
 		emptyStat := models.DateStat{
