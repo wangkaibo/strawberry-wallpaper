@@ -75,7 +75,7 @@ func (c *StatisticController) Active(ctx *gin.Context) {
 
 
 func (c *StatisticController) Index(ctx *gin.Context) {
-	startDate := ctx.DefaultQuery("end_date",time2.Now().AddDate(0, 0, -7).Format("2006/01/02"))
+	startDate := ctx.DefaultQuery("end_date",time2.Now().AddDate(0, 0, -30).Format("2006/01/02"))
 	endDate := ctx.DefaultQuery("start_date",time2.Now().Format("2006/01/02"))
 	statistic, err := c.StatisticService.GetStatistic(startDate, endDate)
 	if err != nil {
