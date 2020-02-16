@@ -8,6 +8,7 @@ import (
 
 type NoticeService interface {
 	GetNotices(int) ([]models.Notice, error)
+	GetNoticeList() ([]models.Notice, error)
 }
 
 type noticeService struct {
@@ -20,7 +21,12 @@ func NewNoticeService() NoticeService {
 	}
 }
 
-func (s *noticeService) GetNotices(status int) ([]models.Notice, error) {
-	notices, err := s.noticeDao.GetNotices(status)
+func (s *noticeService) GetNotices(isPublish int) ([]models.Notice, error) {
+	notices, err := s.noticeDao.GetNotices(isPublish)
+	return notices, err
+}
+
+func (s *noticeService) GetNoticeList() ([]models.Notice, error) {
+	notices, err := s.noticeDao.GetNoticeList()
 	return notices, err
 }

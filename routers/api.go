@@ -24,4 +24,5 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	r.POST("/active", statisticController.Active)
 	r.GET("/statistic", statisticController.Index)
 	r.GET("/notice", noticeController.Notice)
+	r.GET("/notice_list", noticeController.NoticeList)
 }
