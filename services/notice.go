@@ -20,7 +20,7 @@ func NewNoticeService() NoticeService {
 	}
 }
 
-func (s *noticeService) GetNotices(isTest int) ([]models.Notice, error) {
-	notices, err := s.noticeDao.GetNotices(isTest)
+func (s *noticeService) GetNotices(status int) ([]models.Notice, error) {
+	notices, err := s.noticeDao.GetNotices(status)
 	return notices, err
 }

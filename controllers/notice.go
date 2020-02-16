@@ -13,11 +13,11 @@ type NoticeController struct {
 
 func (c *NoticeController) Notice(ctx *gin.Context) {
 	paramTest := ctx.Query("is_test")
-	isTest := 0
+	status := 0
 	if paramTest == "1" {
-		isTest = 1
+		status = 1
 	}
-	notices, err := c.NoticeService.GetNotices(isTest)
+	notices, err := c.NoticeService.GetNotices(status)
 	fmt.Println(err)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
