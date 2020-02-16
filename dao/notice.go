@@ -16,9 +16,9 @@ func NewNoticeDao(engine *xorm.Engine) *NoticeDao {
 	}
 }
 
-func (dao *NoticeDao) GetNotices(isPublish int) ([]models.Notice, error) {
+func (dao *NoticeDao) GetNotices() ([]models.Notice, error) {
 	notices := make([]models.Notice, 0)
-	err := dao.engine.Where("expire_at>?", time.Now()).Where("is_publish=?", isPublish).Limit(50).Find(&notices)
+	err := dao.engine.Where("expire_at>?", time.Now()).Where("is_publish=?", 1).Limit(50).Find(&notices)
 	return notices, err
 }
 

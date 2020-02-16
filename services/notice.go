@@ -7,7 +7,7 @@ import (
 )
 
 type NoticeService interface {
-	GetNotices(int) ([]models.Notice, error)
+	GetNotices() ([]models.Notice, error)
 	GetNoticeList() ([]models.Notice, error)
 }
 
@@ -21,8 +21,8 @@ func NewNoticeService() NoticeService {
 	}
 }
 
-func (s *noticeService) GetNotices(isPublish int) ([]models.Notice, error) {
-	notices, err := s.noticeDao.GetNotices(isPublish)
+func (s *noticeService) GetNotices() ([]models.Notice, error) {
+	notices, err := s.noticeDao.GetNotices()
 	return notices, err
 }
 

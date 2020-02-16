@@ -12,12 +12,7 @@ type NoticeController struct {
 }
 
 func (c *NoticeController) Notice(ctx *gin.Context) {
-	statusParam := ctx.Query("is_publish")
-	isPublish := 1
-	if statusParam == "0" {
-		isPublish = 0
-	}
-	notices, err := c.NoticeService.GetNotices(isPublish)
+	notices, err := c.NoticeService.GetNotices()
 	fmt.Println(err)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
