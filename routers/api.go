@@ -16,7 +16,13 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	statisticController := &controllers.StatisticController{
 		StatisticService: statisticService,
 	}
+	noticeService := services.NewNoticeService()
+	noticeController := &controllers.NoticeController{
+		NoticeService: noticeService,
+	}
 	r.POST("/register", statisticController.Register)
 	r.POST("/active", statisticController.Active)
 	r.GET("/statistic", statisticController.Index)
+	r.GET("/notice", noticeController.Notice)
+	r.GET("/notice_list", noticeController.NoticeList)
 }
