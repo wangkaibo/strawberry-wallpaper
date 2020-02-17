@@ -202,7 +202,7 @@ export default {
     },
     created() {
         window.setInterval(() => {
-            this.currentDate = dateFormat(new Date(), 'YYYY-MM-dd hh-mm-ss')
+            this.currentDate = dateFormat(new Date(), 'YYYY-MM-dd hh:mm:ss')
         }, 1000)
     },
     mounted() {
