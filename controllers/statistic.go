@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mssola/user_agent"
 	"strawberry-wallpaper/models"
@@ -21,13 +22,13 @@ type RegisterReq struct {
 }
 
 func (c *StatisticController) Register(ctx *gin.Context) {
-	registerReq := &RegisterReq{}
-	raw,_ := ctx.GetRawData()
-	err := json.Unmarshal(raw, registerReq)
+	var registerReq RegisterReq
+	err := ctx.ShouldBindJSON(&registerReq)
 	if err != nil {
-		c.error(ctx,400,"不合法的json", gin.H{})
+		c.error(ctx,400,err.Error(), gin.H{})
 		return
 	}
+	fmt.Println(registerReq)
 	if registerReq.Uid == "" || registerReq.Version == "" {
 		c.error(ctx,400,"参数错误", gin.H{})
 		return

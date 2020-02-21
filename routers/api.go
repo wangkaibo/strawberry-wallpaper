@@ -25,4 +25,7 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	r.GET("/statistic", statisticController.Index)
 	r.GET("/notice", noticeController.Notice)
 	r.GET("/notice_list", noticeController.NoticeList)
+	r.DELETE("/notice/:id", noticeController.DeleteNotice)
+	r.PATCH("/notice/:id", noticeController.ChangeStatus)
+	r.POST("/notice", noticeController.AddNotice)
 }

@@ -3,6 +3,7 @@ package dao
 import (
 	"github.com/go-xorm/xorm"
 	"strawberry-wallpaper/models"
+	"strconv"
 	"time"
 )
 
@@ -24,6 +25,34 @@ func (dao *NoticeDao) GetNotices() ([]models.Notice, error) {
 
 func (dao *NoticeDao) GetNoticeList() ([]models.Notice, error) {
 	notices := make([]models.Notice, 0)
-	err := dao.engine.OrderBy("create_at DESC").Limit(100).Find(&notices)
+	err := dao.engine.Table("notice_test").OrderBy("create_at DESC").Limit(100).Find(&notices)
 	return notices, err
+}
+
+func (dao *NoticeDao) DeleteNotice(id string) (bool, error) {
+	idInt, _ := strconv.Atoi(id)
+	notice := &models.Notice{
+		Id: idInt,
+	}
+	_, err := dao.engine.Table("notice_test").Delete(notice)
+	res := false
+	if err == nil {
+		res = true
+	}
+	return res, err
+}
+
+func (dao *NoticeDao) ChangeStatus(id int, isPublish int) (error) {
+	notice := models.Notice{
+		Id: id,
+		IsPublish: isPublish,
+	}
+	_, err := dao.engine.Table("notice_test").Cols("is_publish").Update(&notice)
+
+	return err
+}
+func (dao *NoticeDao) AddNotice(notice models.Notice) (error) {
+	_, err := dao.engine.Table("notice_test").Insert(&notice)
+
+	return err
 }
