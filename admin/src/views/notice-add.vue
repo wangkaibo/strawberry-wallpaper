@@ -139,13 +139,14 @@ export default {
                     apiData.params.id = this.noticeDetail.id
                 }
                 apiAddNotice(apiData).then(() => {
-                    this.currentHtml = ''
-                    editor && editor.txt.html('')
-                    if (this.isEdit){
-                        this.$router.go(-1)
-                    }
                     // 提交成功后
                     this.$localStorage.setStore('noticeDetail', {})
+                    if (this.isEdit){
+                        this.$message.success('编辑公告成功')
+                    } else {
+                        this.$message.success('新建公告成功')
+                    }
+                    this.$router.go(-1)
                 })
             } else {
                 this.$message.error('请补全信息')
