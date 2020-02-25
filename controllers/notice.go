@@ -47,7 +47,7 @@ func (c *NoticeController) DeleteNotice(ctx *gin.Context) {
 }
 
 
-func (c *NoticeController) ChangeStatus(ctx *gin.Context) {
+func (c *NoticeController) PublishNotice(ctx *gin.Context) {
 	id,_ := strconv.Atoi(ctx.Param("id"))
 	status := ctx.Request.FormValue("status")
 	if status == "" {
@@ -55,7 +55,7 @@ func (c *NoticeController) ChangeStatus(ctx *gin.Context) {
 		return
 	}
 	isPublish, _ := strconv.Atoi(status)
-	err := c.NoticeService.ChangeStatus(id, isPublish)
+	err := c.NoticeService.PublishNotice(id, isPublish)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {
@@ -65,22 +65,29 @@ func (c *NoticeController) ChangeStatus(ctx *gin.Context) {
 
 func (c *NoticeController) AddNotice(ctx *gin.Context) {
 	content := ctx.Request.FormValue("content")
+	id := ctx.Request.FormValue("id")
 	if content == "" {
 		c.error(ctx, 400, "内容不能为空", gin.H{})
 		return
 	}
 
-	publishTimeStr := ctx.Request.FormValue("publish_time")
 	expireTimeStr := ctx.Request.FormValue("expire_time")
-
 	var err error
-	publishTime, err := stringToTime(publishTimeStr)
 	expireTime, err := stringToTime(expireTimeStr)
 	if err != nil {
 		c.error(ctx, 400, "参数错误", gin.H{})
 		return
 	}
-	err = c.NoticeService.AddNotice(content, publishTime, expireTime)
+	if id == "" {
+		err = c.NoticeService.AddNotice(content, expireTime)
+	} else {
+		idInt,err := strconv.Atoi(id)
+		if err != nil {
+			c.error(ctx, 400, "参数错误", gin.H{})
+			return
+		}
+		err = c.NoticeService.UpdateNotice(idInt, content, expireTime)
+	}
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {

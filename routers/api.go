@@ -31,7 +31,7 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	// 删除公告 id放到 path
 	r.DELETE("/notice/:id", middleware.Auth(), noticeController.DeleteNotice)
 	// 更改状态 PATCH id放到 path，参数status：0-未发布，1-已发布
-	r.PATCH("/notice/:id", middleware.Auth(), noticeController.ChangeStatus)
+	r.PATCH("/notice/:id", middleware.Auth(), noticeController.PublishNotice)
 	// 增加公告 POST 参数：content：公告内容；publish_time：发布时间；expire_time：过期时间
 	r.POST("/notice", middleware.Auth(), noticeController.AddNotice)
 	r.POST("/login", noticeController.Login)
