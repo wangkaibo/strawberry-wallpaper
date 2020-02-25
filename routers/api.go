@@ -12,6 +12,7 @@ func SetupRouter(b *bootstrap.Bootstrap) {
 	r := b.Engine
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
+	config.AddAllowHeaders("Authorization")
 	r.Use(cors.New(config))
 	statisticService := services.NewStatisticService()
 	statisticController := &controllers.StatisticController{

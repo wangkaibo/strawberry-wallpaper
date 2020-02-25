@@ -61,7 +61,7 @@ export const apiStatistic = () => instance.get('/statistic').then(response => af
  */
 export const apiGetNoticeList = () => noticeInstance.get('/notice_list', {
     headers: {
-        "TOKEN": `${$LocalStorage.getStore('token')}`
+        "Authorization": `${$LocalStorage.getStore('token')}`
     }
 }).then(response => {
     return new Promise((resolve, reject) => {
@@ -102,6 +102,6 @@ export const apiAddNotice = () => noticeInstance.post('/notice', {
  */
 export const apiDeleteNotice = () => noticeInstance.delete('/notice', {
     headers: {
-        "TOKEN": $LocalStorage.getStore('token')
+        "Authorization": $LocalStorage.getStore('token')
     }
 }).then(response => afterAxios())
