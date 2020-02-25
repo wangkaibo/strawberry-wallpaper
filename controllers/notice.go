@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"os"
 	"strawberry-wallpaper/services"
@@ -21,7 +20,6 @@ type NoticeController struct {
 
 func (c *NoticeController) Notice(ctx *gin.Context) {
 	notices, err := c.NoticeService.GetNotices()
-	fmt.Println(err)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {
@@ -49,16 +47,15 @@ func (c *NoticeController) DeleteNotice(ctx *gin.Context) {
 }
 
 
-func (c *NoticeController) ChangeStatus(ctx *gin.Context) {
+func (c *NoticeController) PublishNotice(ctx *gin.Context) {
 	id,_ := strconv.Atoi(ctx.Param("id"))
 	status := ctx.Request.FormValue("status")
-	fmt.Println(status)
 	if status == "" {
 		c.error(ctx, 400, "参数错误", gin.H{})
 		return
 	}
 	isPublish, _ := strconv.Atoi(status)
-	err := c.NoticeService.ChangeStatus(id, isPublish)
+	err := c.NoticeService.PublishNotice(id, isPublish)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {
@@ -68,22 +65,29 @@ func (c *NoticeController) ChangeStatus(ctx *gin.Context) {
 
 func (c *NoticeController) AddNotice(ctx *gin.Context) {
 	content := ctx.Request.FormValue("content")
+	id := ctx.Request.FormValue("id")
 	if content == "" {
 		c.error(ctx, 400, "内容不能为空", gin.H{})
 		return
 	}
 
-	publishTimeStr := ctx.Request.FormValue("publish_time")
 	expireTimeStr := ctx.Request.FormValue("expire_time")
-
 	var err error
-	publishTime, err := stringToTime(publishTimeStr)
 	expireTime, err := stringToTime(expireTimeStr)
 	if err != nil {
 		c.error(ctx, 400, "参数错误", gin.H{})
 		return
 	}
-	err = c.NoticeService.AddNotice(content, publishTime, expireTime)
+	if id == "" {
+		err = c.NoticeService.AddNotice(content, expireTime)
+	} else {
+		idInt,err := strconv.Atoi(id)
+		if err != nil {
+			c.error(ctx, 400, "参数错误", gin.H{})
+			return
+		}
+		err = c.NoticeService.UpdateNotice(idInt, content, expireTime)
+	}
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {
@@ -120,7 +124,9 @@ func (c *NoticeController) Login(ctx *gin.Context) {
 	headerByte, _ := json.Marshal(header)
 	headerBase64 := base64.StdEncoding.EncodeToString(headerByte)
 	payload := map[string]interface{}{
-		"login": true,
+		"username": inputUsername,
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Unix() + 86400 * 7,
 	}
 	payloadByte, _ := json.Marshal(payload)
 	payloadBase64 := base64.StdEncoding.EncodeToString(payloadByte)

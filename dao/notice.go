@@ -42,17 +42,19 @@ func (dao *NoticeDao) DeleteNotice(id string) (bool, error) {
 	return res, err
 }
 
-func (dao *NoticeDao) ChangeStatus(id int, isPublish int) (error) {
-	notice := models.Notice{
-		Id: id,
-		IsPublish: isPublish,
-	}
-	_, err := dao.engine.Table("notice_test").Cols("is_publish").Update(&notice)
+func (dao *NoticeDao) PublishNotice(notice models.Notice) (error) {
+	_, err := dao.engine.Table("notice_test").ID(notice.Id).Cols("is_publish", "time").Update(&notice)
 
 	return err
 }
 func (dao *NoticeDao) AddNotice(notice models.Notice) (error) {
 	_, err := dao.engine.Table("notice_test").Insert(&notice)
+
+	return err
+}
+
+func (dao *NoticeDao) UpdateNotice(notice models.Notice) error {
+	_, err := dao.engine.Table("notice_test").ID(notice.Id).Update(&notice)
 
 	return err
 }
