@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"os"
 	"strawberry-wallpaper/services"
