@@ -28,7 +28,6 @@ func (c *StatisticController) Register(ctx *gin.Context) {
 		c.error(ctx,400,err.Error(), gin.H{})
 		return
 	}
-	fmt.Println(registerReq)
 	if registerReq.Uid == "" || registerReq.Version == "" {
 		c.error(ctx,400,"参数错误", gin.H{})
 		return

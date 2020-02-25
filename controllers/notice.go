@@ -21,7 +21,6 @@ type NoticeController struct {
 
 func (c *NoticeController) Notice(ctx *gin.Context) {
 	notices, err := c.NoticeService.GetNotices()
-	fmt.Println(err)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {
@@ -52,7 +51,6 @@ func (c *NoticeController) DeleteNotice(ctx *gin.Context) {
 func (c *NoticeController) ChangeStatus(ctx *gin.Context) {
 	id,_ := strconv.Atoi(ctx.Param("id"))
 	status := ctx.Request.FormValue("status")
-	fmt.Println(status)
 	if status == "" {
 		c.error(ctx, 400, "参数错误", gin.H{})
 		return
@@ -121,7 +119,8 @@ func (c *NoticeController) Login(ctx *gin.Context) {
 	headerBase64 := base64.StdEncoding.EncodeToString(headerByte)
 	payload := map[string]interface{}{
 		"login": true,
-		"expire_at": time.Now().Unix() + 86400 * 7,
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Unix() + 86400 * 7,
 	}
 	payloadByte, _ := json.Marshal(payload)
 	payloadBase64 := base64.StdEncoding.EncodeToString(payloadByte)

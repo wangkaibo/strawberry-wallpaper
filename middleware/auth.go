@@ -26,9 +26,7 @@ func Auth() gin.HandlerFunc {
 		var payLoadMap map[string]interface{}
 		err = json.Unmarshal(payloadStr, &payLoadMap)
 		unixTime := float64(time.Now().Unix())
-		fmt.Println(payLoadMap["expire_at"].(float64))
-		fmt.Println(unixTime)
-		if payLoadMap["expire_at"].(float64) < unixTime {
+		if payLoadMap["exp"].(float64) < unixTime {
 			noAuth(ctx)
 		}
 		if err != nil || reqSign != sign {
