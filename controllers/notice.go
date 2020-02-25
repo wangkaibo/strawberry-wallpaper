@@ -117,7 +117,7 @@ func (c *NoticeController) Login(ctx *gin.Context) {
 	headerByte, _ := json.Marshal(header)
 	headerBase64 := base64.StdEncoding.EncodeToString(headerByte)
 	payload := map[string]interface{}{
-		"login": true,
+		"username": inputUsername,
 		"iat": time.Now().Unix(),
 		"exp": time.Now().Unix() + 86400 * 7,
 	}
