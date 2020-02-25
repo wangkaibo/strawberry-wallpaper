@@ -15,6 +15,7 @@
 */node_modules
 */dist
 */package-lock.json
+/static
 
 # local env files
 .env.local
