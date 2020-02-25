@@ -62,10 +62,17 @@ export default {
 			currentActiveKey: "",
 			activeName: "text",
 			outTime: 30,
-			currentHtml: ""
+			currentHtml: "",
+			noticeDetail:{},
 		};
 	},
-	mounted() {},
+	mounted() {
+		const isEdit = this.$route.query.isEdit||false;
+		if(isEdit){
+			this.noticeDetail=this.$localStorage.getStore('noticeDetail')
+			this.currentHtml=this.noticeDetail.content||''
+		}
+	},
 	methods: {
 		handleTabClick(tag) {
 			if (tag.name === "richText" && !editor) {
@@ -88,11 +95,13 @@ export default {
 						"video", // 插入视频
 						"code" // 插入代码
 					];
+				
 					editor.customConfig.onchange = html => {
 						console.log("=======", html);
 						this.handleValChange(html);
 					};
 					editor.create();
+					editor.txt.html(this.currentHtml)
 				});
 			}
 		},
@@ -116,7 +125,9 @@ export default {
         
         handleSubmit(){
             if(this.currentHtml!==''&&this.outTime){
-                console.log('==========提交')
+				console.log('==========提交')
+				// 提交成功后
+				this.$localStorage.setStore('noticeDetail',{})
             }
             else{
                 this.$message.error('请补全信息')

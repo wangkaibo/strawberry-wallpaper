@@ -5,8 +5,10 @@ import router from './router'
 import store from './store'
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
 import './assets/css/index.css'
+import localStorage from './assets/js/local-storage.js'
 
 Vue.config.productionTip = false
+Vue.prototype.$localStorage = localStorage
 
 Vue.use(ElementUI);
 

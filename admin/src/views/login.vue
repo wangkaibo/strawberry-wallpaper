@@ -7,10 +7,10 @@
             label-width="60px" 
             :model="form">
             <el-form-item label="用户名">
-                <el-input v-model="form.name"></el-input>
+                <el-input v-model="form.username"></el-input>
             </el-form-item>
             <el-form-item label="密码">
-                <el-input v-model="form.password"></el-input>
+                <el-input v-model="form.password" type="password"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button @click="submit()">登录</el-button>
@@ -31,7 +31,7 @@ export default {
     data() {
         return {
             form: {
-                name: '',
+                username: '',
                 password: ''
             },
         };
@@ -44,10 +44,12 @@ export default {
     /**
      * 提交
      */
-        submit() {
-            apiLogin(this.form).then((result) => {
-                console.log('登录成功');
-            });
+    submit() {
+        apiLogin(this.form).then((result) => {
+            this.$localStorage.setStore('token',result.token)
+            this.$router.push('/notice-list')
+            console.log('登录成功');
+        });
         }
     }
 };

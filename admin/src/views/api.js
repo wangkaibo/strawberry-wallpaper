@@ -1,10 +1,17 @@
-const apiBaseUrl = 'http://strawberry.wangkaibo.com';
-const axios = require('axios');
+const apiBaseUrl = 'http://strawberry.wangkaibo.com'
+const axios = require('axios')
+import $LocalStorage from '../assets/js/local-storage'
+import qs from 'qs';
 
 const instance = axios.create({
     baseURL: apiBaseUrl,
-    timeout: 1000
+    timeout: 0
 });
+
+const noticeInstance = axios.create({
+    baseURL: apiBaseUrl,
+    timeout: 0,
+})
 
 // // 添加响应拦截器
 // axios.interceptors.response.use(
@@ -38,7 +45,10 @@ function afterAxios(response) {
 export const apiLogin = data => instance({
     url: '/login',
     method: 'post',
-    data
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: qs.stringify(data)
 }).then(response => afterAxios(response))
 
 /**
@@ -49,14 +59,17 @@ export const apiStatistic = () => instance.get('/statistic').then(response => af
 /**
  * 获取列表
  */
-export const apiGetNoticeList = () => instance.get('/notice_list').then(response => {
+export const apiGetNoticeList = () => noticeInstance.get('/notice_list', {
+    headers: {
+        "TOKEN": `${$LocalStorage.getStore('token')}`
+    }
+}).then(response => {
     return new Promise((resolve, reject) => {
         afterAxios(response).then(res => {
-   
             const now = (new Date).getTime()
             const result = res.map(item => {
                 let status = '2'
-                if (now > item.expire_at && is_publish === 1) {
+                if (now > item.expire_at && item.is_publish === 1) {
                     status = '3'
                 }
                 else if (item.is_publish === 1) {
@@ -69,6 +82,7 @@ export const apiGetNoticeList = () => instance.get('/notice_list').then(response
             })
             resolve(result)
         }).catch((err) => {
+            console.log(err)
             resolve([])
         })
     })
@@ -77,9 +91,17 @@ export const apiGetNoticeList = () => instance.get('/notice_list').then(response
 /**
  * 增加
  */
-export const apiAddNotice = () => instance.post('/notice').then(response => afterAxios(response))
+export const apiAddNotice = () => noticeInstance.post('/notice', {
+    headers: {
+        "Authorization": $LocalStorage.getStore('token')
+    }
+}).then(response => afterAxios(response))
 
 /**
  * 删除公告
  */
-export const apiDeleteNotice = () => instance.delete('/notice').then(response => afterAxios())
+export const apiDeleteNotice = () => noticeInstance.delete('/notice', {
+    headers: {
+        "TOKEN": $LocalStorage.getStore('token')
+    }
+}).then(response => afterAxios())
