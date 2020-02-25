@@ -1,18 +1,20 @@
 package middleware
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strawberry-wallpaper/controllers"
 	"strings"
+	"time"
 )
 
 func Auth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token := ctx.Request.Header.Get("TOKEN")
 		tokenList := strings.Split(token, ".")
-		fmt.Println(len(tokenList))
 		if len(tokenList) != 3 {
 			noAuth(ctx)
 		}
@@ -20,7 +22,16 @@ func Auth() gin.HandlerFunc {
 		payload := tokenList[1]
 		reqSign := tokenList[2]
 		sign := controllers.GetJwtSign(header, payload)
-		if reqSign != sign {
+		payloadStr,err := base64.StdEncoding.DecodeString(payload)
+		var payLoadMap map[string]interface{}
+		err = json.Unmarshal(payloadStr, &payLoadMap)
+		unixTime := float64(time.Now().Unix())
+		fmt.Println(payLoadMap["expire_at"].(float64))
+		fmt.Println(unixTime)
+		if payLoadMap["expire_at"].(float64) < unixTime {
+			noAuth(ctx)
+		}
+		if err != nil || reqSign != sign {
 			noAuth(ctx)
 		}
 		ctx.Next()

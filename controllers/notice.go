@@ -121,6 +121,7 @@ func (c *NoticeController) Login(ctx *gin.Context) {
 	headerBase64 := base64.StdEncoding.EncodeToString(headerByte)
 	payload := map[string]interface{}{
 		"login": true,
+		"expire_at": time.Now().Unix() + 86400 * 7,
 	}
 	payloadByte, _ := json.Marshal(payload)
 	payloadBase64 := base64.StdEncoding.EncodeToString(payloadByte)
