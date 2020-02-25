@@ -13,7 +13,7 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		token := ctx.Request.Header.Get("TOKEN")
+		token := ctx.Request.Header.Get("Authorization")
 		tokenList := strings.Split(token, ".")
 		if len(tokenList) != 3 {
 			noAuth(ctx)
