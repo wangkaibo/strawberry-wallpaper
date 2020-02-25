@@ -1,30 +1,33 @@
 <template>
-<div class="sw-main">
-    <div class="sw-main_header">
-        <div class="sw-main_header_h3">Strawberry Wallpaper 后台统计平台</div>
-        <div class="sw-main_header_icon"></div>
-        <div class="sw-main_header_date">{{currentDate}}</div>
-    </div>
-    <div class="sw-row sw-row_one">
-        <div class="sw-main_data">
-            <div class="sw-modal-bk"></div>
-            <div class="sw-modal-content">
-                <div class="sw-main_title">安装数量统计</div>
-                <div class="sw-main_data_title">
-                    <div class="sw-main_data_title_t">安装总量:</div><div class="sw-main_data_title_c">{{ totalNum }}</div>
-                </div>
-                <div class="sw-main_data_title">
-                    <div class="sw-main_data_title_t">最新的日活量:</div><div class="sw-main_data_title_c">{{ activeNum }}</div>
-                </div>
+    <div class="sw-main-body">
+        <div class="sw-main">
+            <div class="sw-main_header">
+                <div class="sw-main_header_h3">Strawberry Wallpaper 后台统计平台</div>
+                <div class="sw-main_header_icon"></div>
+                <div class="sw-main_header_date">{{currentDate}}</div>
             </div>
-        </div>
-        <div class="sw-main_system">
-            <div class="sw-modal-bk"></div>
-            <div class="sw-modal-content">
-                <div class="sw-main_title">安装平台统计</div>
-                    <div class="sw-main_system_content">
-                        <div ref="ref_system" class="sw-main_system_platform"></div>
-                        <!-- <div class="sw-main_system_version">
+            <div class="sw-row sw-row_one">
+                <div class="sw-main_data">
+                    <div class="sw-modal-bk"></div>
+                    <div class="sw-modal-content">
+                        <div class="sw-main_title">安装数量统计</div>
+                        <div class="sw-main_data_title">
+                            <div class="sw-main_data_title_t">安装总量:</div>
+                            <div class="sw-main_data_title_c">{{ totalNum }}</div>
+                        </div>
+                        <div class="sw-main_data_title">
+                            <div class="sw-main_data_title_t">最新的日活量:</div>
+                            <div class="sw-main_data_title_c">{{ activeNum }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sw-main_system">
+                    <div class="sw-modal-bk"></div>
+                    <div class="sw-modal-content">
+                        <div class="sw-main_title">安装平台统计</div>
+                        <div class="sw-main_system_content">
+                            <div ref="ref_system" class="sw-main_system_platform"></div>
+                            <!-- <div class="sw-main_system_version">
                             <div class="sw-main_system_version_mac sw-main_system_version_item">
                                 <div>mac</div>
                                 <div><span>10.10.14</span>: <span>12</span></div> 
@@ -38,25 +41,26 @@
                                 <div><span>win10</span>: <span>12</span></div> 
                             </div>
                         </div> -->
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div class="sw-row sw-main_add">
+                <div class="sw-modal-bk"></div>
+                <div class="sw-modal-content">
+                    <div class="sw-main_title">每日新增用户量统计</div>
+                    <div ref="ref_add" class="sw-main_add_content sw-row_content"></div>
+                </div>
+            </div>
+            <div class="sw-row sw-main_active">
+                <div class="sw-modal-bk"></div>
+                <div class="sw-modal-content">
+                    <div class="sw-main_title">每日活跃用户量统计</div>
+                    <div ref="ref_active" class="sw-main_active_contentm sw-row_content"></div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="sw-row sw-main_add">
-         <div class="sw-modal-bk"></div>
-         <div class="sw-modal-content">
-            <div class="sw-main_title">每日新增用户量统计</div>
-            <div ref="ref_add" class="sw-main_add_content sw-row_content"></div>
-         </div>
-    </div>
-    <div class="sw-row sw-main_active">
-         <div class="sw-modal-bk"></div>
-         <div class="sw-modal-content">
-            <div class="sw-main_title">每日活跃用户量统计</div>
-            <div ref="ref_active" class="sw-main_active_contentm sw-row_content"></div>
-         </div>
-    </div>
-</div>
 </template>
 
 <script>
@@ -64,7 +68,6 @@
 import echarts from 'echarts'
 import { apiStatistic } from './api.js'
 import { dateFormat } from '../assets/js/until.js'
-
 
 // 引入 echarts 主模块。
 // 引入折线图。
@@ -76,9 +79,9 @@ import { dateFormat } from '../assets/js/until.js'
 // import 'echarts/lib/component/title';
 // import 'echarts/lib/component/toolbox';
 
-let echartsSystem = null;
-let echartsAdd = null;
-let echartsActive = null;
+let echartsSystem = null
+let echartsAdd = null
+let echartsActive = null
 const lineConfig = (xData, yData) => ({
     grid: {
         left: 60,
@@ -89,7 +92,7 @@ const lineConfig = (xData, yData) => ({
     tooltip: {
         trigger: 'axis',
         position(pt) {
-            return [pt[0], '10%'];
+            return [pt[0], '10%']
         }
     },
     xAxis: {
@@ -198,7 +201,7 @@ export default {
             totalNum: '0',
             activeNum: '0',
             currentDate: '',
-        };
+        }
     },
     created() {
         window.setInterval(() => {
@@ -207,11 +210,11 @@ export default {
     },
     mounted() {
         apiStatistic().then((result) => {
-            this.echartsSystemInit(result.platform);
-            this.echartsAddInit(result.register);
-            this.echartsActiveInit(result.active);
-            this.totalNum = result.total_num;
-            this.activeNum = result.active_num;
+            this.echartsSystemInit(result.platform)
+            this.echartsAddInit(result.register)
+            this.echartsActiveInit(result.active)
+            this.totalNum = result.total_num
+            this.activeNum = result.active_num
         }).catch((e) => {
             console.log(e)
         })
@@ -223,36 +226,36 @@ export default {
                 name: platform[item.platform] || item.platform
             }))
             if (echartsSystem === null){
-                echartsSystem = echarts.init(this.$refs.ref_system);
+                echartsSystem = echarts.init(this.$refs.ref_system)
             }
-            echartsSystem.setOption(pieConfig(resultData));
+            echartsSystem.setOption(pieConfig(resultData))
         },
         echartsAddInit(data) {
-            const xData = [];
-            const yData = [];
+            const xData = []
+            const yData = []
             data.forEach((item) => {
-                xData.push(item.date);
-                yData.push(item.count);
-            });
+                xData.push(item.date)
+                yData.push(item.count)
+            })
             if (echartsAdd === null){
-                echartsAdd = echarts.init(this.$refs.ref_add);
+                echartsAdd = echarts.init(this.$refs.ref_add)
             }
-            echartsAdd.setOption(lineConfig(xData, yData));
+            echartsAdd.setOption(lineConfig(xData, yData))
         },
         echartsActiveInit(data) {
-            const xData = [];
-            const yData = [];
+            const xData = []
+            const yData = []
             data.forEach((item) => {
-                xData.push(item.date);
-                yData.push(item.count);
-            });
+                xData.push(item.date)
+                yData.push(item.count)
+            })
             if (echartsActive === null){
-                echartsActive = echarts.init(this.$refs.ref_active);
+                echartsActive = echarts.init(this.$refs.ref_active)
             }
-            echartsActive.setOption(lineConfig(xData, yData));
+            echartsActive.setOption(lineConfig(xData, yData))
         }
     }
-};
+}
 </script>
 
 <style lang="scss" scoped>

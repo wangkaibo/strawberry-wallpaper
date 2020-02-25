@@ -22,7 +22,7 @@
 				<el-input
 					class="input"
 					v-model="outTime"
-                    @input="handleOutTimeInput"
+					@input="handleOutTimeInput"
 					placeholder="请输入内容"
 				>
 					<template slot="append">天</template>
@@ -44,98 +44,116 @@
 </template>
 
 <script>
-import noticeView from "../components/notice-view/index.vue";
+import noticeView from '../components/notice-view/index.vue'
 
-const E = window.wangEditor;
+import { apiAddNotice } from './api.js'
 
-let editor = null;
+const E = window.wangEditor
+
+let editor = null
 
 export default {
-	name: "notice-add",
-	components: {
-		noticeView
-	},
-	data() {
-		return {
-			noticeList: [],
-			viewContent: [],
-			currentActiveKey: "",
-			activeName: "text",
-			outTime: 30,
-			currentHtml: "",
-			noticeDetail:{},
-		};
-	},
-	mounted() {
-		const isEdit = this.$route.query.isEdit||false;
-		if(isEdit){
-			this.noticeDetail=this.$localStorage.getStore('noticeDetail')
-			this.currentHtml=this.noticeDetail.content||''
-		}
-	},
-	methods: {
-		handleTabClick(tag) {
-			if (tag.name === "richText" && !editor) {
-				this.$nextTick(() => {
-					editor = new E(this.$refs.editor);
-					editor.customConfig.menus = [
-						"head", // 标题
-						"bold", // 粗体
-						"fontSize", // 字号
-						"italic", // 斜体
-						"underline", // 下划线
-						"strikeThrough", // 删除线
-						"foreColor", // 文字颜色
-						"backColor", // 背景颜色
-						"link", // 插入链接
-						"list", // 列表
-						"justify", // 对齐方式
-						"emoticon", // 表情
-						"image", // 插入图片
-						"video", // 插入视频
-						"code" // 插入代码
-					];
-				
-					editor.customConfig.onchange = html => {
-						console.log("=======", html);
-						this.handleValChange(html);
-					};
-					editor.create();
-					editor.txt.html(this.currentHtml)
-				});
-			}
-		},
+    name: 'notice-add',
+    components: {
+        noticeView
+    },
+    data() {
+        return {
+            noticeList: [],
+            viewContent: [],
+            currentActiveKey: '',
+            activeName: 'text',
+            outTime: 30,
+            currentHtml: '',
+            noticeDetail: {},
+            isEdit: false,
+        }
+    },
+    mounted() {
+        this.isEdit = this.$route.query.isEdit || false
+        if (this.isEdit) {
+            this.noticeDetail = this.$localStorage.getStore('noticeDetail')
+            this.currentHtml = this.noticeDetail.content || ''
+        }
+    },
+    methods: {
+        handleTabClick(tag) {
+            if (tag.name === 'richText' && !editor) {
+                this.$nextTick(() => {
+                    editor = new E(this.$refs.editor)
+                    editor.customConfig.menus = [
+                        'head', // 标题
+                        'bold', // 粗体
+                        'fontSize', // 字号
+                        'italic', // 斜体
+                        'underline', // 下划线
+                        'strikeThrough', // 删除线
+                        'foreColor', // 文字颜色
+                        'backColor', // 背景颜色
+                        'link', // 插入链接
+                        'list', // 列表
+                        'justify', // 对齐方式
+                        'emoticon', // 表情
+                        'image', // 插入图片
+                        'video', // 插入视频
+                        'code' // 插入代码
+                    ]
 
-		handleValChange(val) {
-			console.log(val);
-			this.currentHtml = val;
-			this.viewContent = [
-				{
-					time: new Date().getTime(),
-					content: val
-				}
-			];
-        },
-
-        handleOutTimeInput(val){
-            if(Number.isNaN(Number(val))){
-                this.outTime=30
+                    editor.customConfig.onchange = (html) => {
+                        this.handleValChange(html)
+                    }
+                    editor.create()
+                    editor.txt.html(this.currentHtml)
+                })
             }
         },
-        
-        handleSubmit(){
-            if(this.currentHtml!==''&&this.outTime){
-				console.log('==========提交')
-				// 提交成功后
-				this.$localStorage.setStore('noticeDetail',{})
+
+        handleValChange(val) {
+            this.currentHtml = val
+            this.viewContent = [
+                {
+                    time: new Date().getTime(),
+                    content: val
+                }
+            ]
+        },
+
+        handleOutTimeInput(val) {
+            if (Number.isNaN(Number(val))) {
+                this.outTime = 30
             }
-            else{
+        },
+
+        handleSubmit() {
+            if (this.currentHtml !== '' && this.outTime) {
+                const currentTime = new Date().getTime()
+                const apiData = {
+                    params: {},
+                    data: {
+                        content: this.currentHtml,
+                        // expire_time: currentTime,
+                        expire_time: currentTime + Number(this.outTime) * 24 * 60 * 60 * 1000
+                    }
+                }
+                if (this.isEdit){
+                    apiData.params.id = this.noticeDetail.id
+                }
+                apiAddNotice(apiData).then(() => {
+                    this.currentHtml = ''
+                    editor && editor.txt.html('')
+                    if (this.isEdit){
+                        this.$router.go(-1)
+                    }
+                    // 提交成功后
+                    this.$localStorage.setStore('noticeDetail', {})
+                })
+            } else {
                 this.$message.error('请补全信息')
             }
         }
-	},
-	beforeDestroy() {}
-};
+    },
+    beforeDestroy() {}
+}
 </script>
 
 

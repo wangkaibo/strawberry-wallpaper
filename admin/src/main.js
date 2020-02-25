@@ -10,10 +10,13 @@ import localStorage from './assets/js/local-storage.js'
 Vue.config.productionTip = false
 Vue.prototype.$localStorage = localStorage
 
-Vue.use(ElementUI);
+Vue.use(ElementUI)
 
-new Vue({
+const mainVue = new Vue({
     router,
     store,
     render: h => h(App)
 }).$mount('#app')
+
+
+export default mainVue

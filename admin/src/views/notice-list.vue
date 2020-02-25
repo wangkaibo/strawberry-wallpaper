@@ -3,12 +3,12 @@
 		<div class="content">
 			<transition name="fade" mode="out-in">
 				<div class="view" v-show="viewContent.length > 0">
-					<div class="view-header">
+					<!-- <div class="view-header">
 						<i
 							class="el-icon-close"
 							@click="handleCloseView"
 						></i>
-					</div>
+					</div> -->
 					<noticeView :viewContent="viewContent" />
 				</div>
 			</transition>
@@ -28,12 +28,12 @@
 					<el-table-column
 						label="发布时间"
 						prop="showTime"
-						width="100"
+						width="140"
 					></el-table-column>
 					<el-table-column
 						label="过期时间"
 						prop="outTime"
-						width="100"
+						width="140"
 					></el-table-column>
 					<el-table-column
 						label="内容"
@@ -57,29 +57,20 @@
 							<div class="opteace">
 								<el-button
 									size="mini"
-									v-if="
-										(viewContent[0] &&
-											viewContent[0].content !==
-												scope.row.content) ||
-											!viewContent[0]
-									"
+									v-if="(currentViewNoticeId && currentViewNoticeId !== scope.row.id) || !currentViewNoticeId "
 									@click="handleView(scope.row)"
 									>预览</el-button
 								>
 								<el-button
 									size="mini"
-									v-if="
-										viewContent[0] &&
-											viewContent[0].content ===
-												scope.row.content
-									"
+									v-if="currentViewNoticeId === scope.row.id "
 									@click="handleCloseView(scope.row)"
 									>关闭预览</el-button
 								>
 								<el-button
 									size="mini"
 									v-if="scope.row.status === '2'"
-									@click="handlePublist(scope.row)"
+									@click="handlePublist(scope.row, scope.$index)"
 									>发布</el-button
 								>
 								<el-button
@@ -90,7 +81,7 @@
 								>
 								<el-button
 									size="mini"
-									v-if="scope.row.status === '2'"
+									v-if="scope.row.status === '2'||scope.row.status === '3'"
 									type="danger"
 									@click="
 										handleDelete(scope.row, scope.$index)
@@ -107,68 +98,87 @@
 </template>
 
 <script>
-import { apiGetNoticeList } from "./api.js";
+import { apiGetNoticeList, apiDeleteNotice, apiPublicNotice } from './api.js'
 
-import { dateFormat } from "../assets/js/until.js";
-import noticeView from "../components/notice-view/index.vue";
+import { dateFormat } from '../assets/js/until.js'
+import noticeView from '../components/notice-view/index.vue'
 
 export default {
-	name: "notice-list",
-	components: { noticeView },
-	data() {
-		return {
-			statusOptions: {
-				1: "已发布",
-				2: "未发布",
-				3: "已过期"
-			},
-			tableData: [],
-			viewContent: []
-		};
-	},
-	mounted() {
-		apiGetNoticeList().then(res => {
-			this.tableData = res.map(item => ({
-				...item,
-				outTime: dateFormat(new Date(item.expire_at), "MM-dd hh:mm"),
-				showTime: dateFormat(new Date(item.time), "MM-dd hh:mm")
-			}));
-		});
-	},
-	methods: {
-		handleNewClick() {
-			this.$router.push("/notice-add");
-		},
-		handleView(data) {
-			this.viewContent = [
-				{
-					time: data.time,
-					content: data.content
-				}
-			];
-		},
+    name: 'notice-list',
+    components: { noticeView },
+    data() {
+        return {
+            statusOptions: {
+                1: '已发布',
+                2: '未发布',
+                3: '已过期'
+            },
+            tableData: [],
+            viewContent: [],
+            currentViewNoticeId: '',
+        }
+    },
+    mounted() {
+        apiGetNoticeList().then((res) => {
+            this.tableData = res.map(item => ({
+                ...item,
+                outTime: dateFormat(new Date(item.expire_at), 'yyyy-MM-dd hh:mm'),
+                showTime: item.time !== -6795364578871 ? dateFormat(new Date(item.time), 'yyyy-MM-dd hh:mm') : '--'
+            }))
+        })
+    },
+    methods: {
+        handleNewClick() {
+            this.$router.push('/notice-add')
+        },
+        handleView(data) {
+            this.viewContent = [
+                {
+                    time: data.time,
+                    content: data.content
+                }
+            ]
+            this.currentViewNoticeId = data.id
+        },
 
-		handleCloseView() {
-			this.viewContent = [];
-		},
+        handleCloseView() {
+            this.viewContent = []
+            this.currentViewNoticeId = ''
+        },
 
-		handlePublist(data) {},
+        handlePublist(data, index) {
+            apiPublicNotice(data.id, { status: 1 }).then(() => {
+                this.tableData[index].status = '1'
+                this.tableData[index].showTime = dateFormat(new Date(), 'yyyy-MM-dd hh:mm')
+                this.$message.success('发布成功')
+            })
+        },
 
-		handleEdit(data) {
-            console.log('========', this.$localStorage)
-            this.$localStorage.setStore('noticeDetail',data)
+        handleEdit(data) {
+            this.$localStorage.setStore('noticeDetail', data)
             this.$router.push({
-                path:'/notice-add',
-                query:{
-                    isEdit:true,
+                path: '/notice-add',
+                query: {
+                    isEdit: true,
                 }
             })
         },
 
-		handleDelete(data) {}
-	},
-	beforeDestroy() {}
-};
+        handleDelete(data, index) {
+            this.$confirm('确定删除该条公告吗?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$message.success('删除成功')
+                apiDeleteNotice(data.id).then(() => {
+                    this.tableData.splice(index, 1)
+                })
+            })
+        }
+    },
+    beforeDestroy() {}
+}
 </script>
 
 <style lang="less" scoped>
@@ -177,21 +187,23 @@ export default {
 	height: 100%;
 	display: flex;
 	position: relative;
+	background: url('http://blog.mrabit.com/bing/today') no-repeat center center;
 
 	.content {
 		width: 100%;
 		height: 100%;
+		background-color: rgba(0,0,0,0.5);
 
 		.view {
 			position: absolute;
 			top: 0;
 			left: 0;
 			width: 320px;
-			height: 100%;
+			// height: 100%;
 			text-align: left;
 			flex: none;
 			z-index: 99;
-			background-color: #222222;
+			// background-color: #222222;
 			overflow: hidden;
 			.view-header {
 				padding: 0 10px;
@@ -206,7 +218,7 @@ export default {
 			padding: 0 20px;
 			flex: auto;
 			.header {
-				padding: 0 20px;
+				// padding: 0 20px;
 				height: 60px;
 				line-height: 60px;
 				text-align: right;

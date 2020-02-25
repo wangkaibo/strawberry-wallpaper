@@ -12,10 +12,6 @@ module.exports = {
         "amd": true
     },
     extends: ['plugin:vue/essential', 'airbnb-base'],
-    globals: {
-        Atomics: 'readonly',
-        SharedArrayBuffer: 'readonly'
-    },
     parserOptions: {
         ecmaVersion: 2018,
         sourceType: 'module',
@@ -32,7 +28,7 @@ module.exports = {
     },
     rules: {
         // 句尾分号可以省略
-        'semi': 'off',
+        'semi': ["error", "never"],
         // 代码中console/debugger处理
         'no-console': 'off',
         'no-debugger': 'off',
