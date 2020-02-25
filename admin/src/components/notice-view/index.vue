@@ -92,7 +92,6 @@ export default {
 
 	watch: {
 		viewContent(val) {
-			console.log("======val", val);
 			this.noticeList = val.map(item => ({
 				time: this.dateFormat(item.time),
 				content: item.content
