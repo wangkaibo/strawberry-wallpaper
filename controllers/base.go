@@ -17,7 +17,7 @@ func (b *BaseController) success(c *gin.Context, data interface{}) {
 }
 
 func (b *BaseController) error(c *gin.Context, code int, message string, data interface{}) {
-	c.JSON(http.StatusOK, gin.H{
+	c.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"code": code,
 		"message": message,
 		"data": data,
