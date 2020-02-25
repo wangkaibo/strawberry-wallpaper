@@ -1,8 +1,14 @@
 package controllers
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"os"
 	"strawberry-wallpaper/services"
 	"strconv"
 	"time"
@@ -35,7 +41,6 @@ func (c *NoticeController) NoticeList(ctx *gin.Context) {
 func (c *NoticeController) DeleteNotice(ctx *gin.Context) {
 	id := ctx.Param("id")
 	notices, err := c.NoticeService.DeleteNotice(id)
-	fmt.Println(err)
 	if err != nil {
 		c.error(ctx, 500, err.Error(), gin.H{})
 	} else {
@@ -93,4 +98,46 @@ func stringToTime(ms string) (time.Time, error) {
 	}
 	nsImt64 := int64(msInt) * int64(time.Millisecond)
 	return time.Unix(0, nsImt64), nil
+}
+
+func (c *NoticeController) Login(ctx *gin.Context) {
+	inputUsername := ctx.Request.FormValue("username")
+	inputPassword := ctx.Request.FormValue("password")
+	username := os.Getenv("ADMIN_USERNAME")
+	password := os.Getenv("ADMIN_PASSWORD")
+	if inputUsername == "" || inputPassword == "" {
+		c.error(ctx, 401, "帐号或密码错误", gin.H{})
+		return
+	}
+	if !(inputUsername == username && inputPassword == password) {
+		c.error(ctx, 401, "帐号或密码错误", gin.H{})
+		return
+	}
+	header := map[string]interface{}{
+		"alg": "HS256",
+		"typ": "JWT",
+	}
+	headerByte, _ := json.Marshal(header)
+	headerBase64 := base64.StdEncoding.EncodeToString(headerByte)
+	payload := map[string]interface{}{
+		"login": true,
+	}
+	payloadByte, _ := json.Marshal(payload)
+	payloadBase64 := base64.StdEncoding.EncodeToString(payloadByte)
+	sign := GetJwtSign(headerBase64, payloadBase64)
+	token := headerBase64 + "." + payloadBase64 + "." + sign
+
+	c.success(ctx, gin.H{
+		"token": token,
+	})
+}
+
+func GetJwtSign(header string, payload string) string {
+	secret := os.Getenv("JWT_SECRET")
+	signStr := header + "." + payload
+	hmacHash256 := hmac.New(sha256.New, []byte(secret))
+	hmacHash256.Write([]byte(signStr))
+	b := hmacHash256.Sum(nil)
+
+	return hex.EncodeToString(b)
 }
